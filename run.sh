@@ -1,0 +1,36 @@
+#!/bin/bash
+export APP_NAME="autoshift"
+export REPO_URL="https://github.com/RyanMillerC/autoshiftv2.git"
+export TARGET_REVISION="main"
+export VALUES_FILE="values/global.yaml"
+export VALUES_FILE_2="values/clustersets/hub-ryan.yaml"
+export ARGO_PROJECT="default"
+export GITOPS_NAMESPACE="openshift-gitops"
+cat << EOF | oc apply -f -
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: $APP_NAME
+  namespace: $GITOPS_NAMESPACE
+spec:
+  destination:
+    namespace: $GITOPS_NAMESPACE
+    server: https://kubernetes.default.svc
+  source:
+    path: autoshift
+    repoURL: $REPO_URL
+    targetRevision: $TARGET_REVISION
+    helm:
+      valueFiles:
+        - $VALUES_FILE
+        - $VALUES_FILE_2
+      values: |-
+        autoshiftGitRepo: $REPO_URL
+        autoshiftGitBranchTag: $TARGET_REVISION
+  sources: []
+  project: $ARGO_PROJECT
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+EOF
