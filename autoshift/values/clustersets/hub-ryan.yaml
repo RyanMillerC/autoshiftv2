@@ -42,3 +42,10 @@ hubClusterSets:
       acm-channel: release-2.16
       acm-source: redhat-operators
       acm-source-namespace: openshift-marketplace
+
+      ### DevSpaces
+      dev-spaces: 'true'
+      dev-spaces-subscription-name: devspaces
+      dev-spaces-channel: stable
+      dev-spaces-source: redhat-operators
+      dev-spaces-source-namespace: openshift-marketplace
